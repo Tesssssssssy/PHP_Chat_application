@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ChipsterPlay demo chat</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <div id="chatLog"></div>
+  <p id="chatCount"></p>
+  <form id="chatForm">
+    <input type="text" id="senderInput" placeholder="Sender" required>
+    <input type="text" id="messageInput" placeholder="Message" required>
+    <button type="submit">Send</button>
+  </form>
+
+  <script>
+    // 메시지 전송 함수
+    function sendMessage(sender, message) {
+      var data = {
+        sender: sender,
+        message: message
+      };
+
+      $.ajax({
+        url: 'chat_api.php',
+        type: 'POST',
+        data: data,
+        success: function(response) {
+          console.log('Message sent:', response);
+        },
+        error: function(xhr, status, error) {
+          console.log('Error sending message:', error);
+        }
+      });
+    }
+
+    // 새 메시지 수신 함수
+    function listenForNewMessages() {
+      $.ajax({
+        url: 'chat_api.php',
+        type: 'GET',
+        success: function(response) {
+          var messages = response.messages;
+          var count = response.count;
+
+          var chatLog = document.getElementById('chatLog');
+          chatLog.innerHTML = '';
+
+          messages.forEach(function(message) {
+            var newMessageElement = document.createElement('p');
+            newMessageElement.innerText = message.sender + ': ' + message.message;
+            chatLog.appendChild(newMessageElement);
+          });
+
+          var chatCount = document.getElementById('chatCount');
+          chatCount.innerText = 'Total Messages: ' + count;
+        },
+        error: function(xhr, status, error) {
+          console.log('Error retrieving messages:', error);
+        }
+      });
+    }
+
+    // 폼 제출 이벤트 처리
+    document.getElementById('chatForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var senderInput = document.getElementById('senderInput');
+      var messageInput = document.getElementById('messageInput');
+      var sender = senderInput.value.trim();
+      var message = messageInput.value.trim();
+
+      if (sender !== '' && message !== '') {
+        sendMessage(sender, message);
+        messageInput.value = '';
+      }
+    });
+
+    // 초기 채팅 로그 로드
+    listenForNewMessages();
+  </script>
+</body>
+</html>
