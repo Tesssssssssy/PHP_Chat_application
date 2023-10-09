@@ -2,6 +2,8 @@
 This demo API is for chat using PHP and Firebase Realtime Database.
 I checked the HTTP communication by Postman.
 
+!!! This API is not working now because the Google Firebase messaging API system has been changed, so I need to migrate the code.
+
 ### How it works
 https://github.com/Tesssssssssy/PHP_Chat_application/assets/105422037/2b34d6d0-ced8-48f0-a0b9-d326b8813a4a
 
